@@ -1,5 +1,6 @@
 #include <time.h> // Necessária para a geração de floats aleatórios
 #include <stdlib.h> 
+#include "numerosAleatorios.h"
 
 
 void iniciarSeedAleatoria(){

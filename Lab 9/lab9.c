@@ -6,7 +6,7 @@
 #define NUMTHREADS 5
 
 // Globais
-sem_t semaforoT1,semaforoT24, semaforoT5;
+sem_t semaforoT1,semaforoT24;
 int estado_dialogo = 0;
 
 void *tarefaThread234(void *arg){ // intermediários
@@ -19,8 +19,6 @@ void *tarefaThread234(void *arg){ // intermediários
      if(estado_dialogo == 4){
        sem_post(&semaforoT1);
     }
-
-    sem_post(&semaforoT24);
     
     pthread_exit(NULL);//
 }
@@ -38,11 +36,12 @@ void *tarefaThread1(void *arg){ // aqui executa por último
 void *tarefaThread5(void *arg){ // aqui executa primeiro
     char *textoArgumento = (char *) arg;
 
-    sem_wait(&semaforoT5);
     puts(textoArgumento);
 
     estado_dialogo++;
-    sem_post(&semaforoT24);
+    for(int i = 0; i < 3; i++)  {
+        sem_post(&semaforoT24);
+    }
 
     pthread_exit(NULL);
 }
@@ -55,7 +54,6 @@ int main(){
 
     sem_init(&semaforoT24,0,0);
     sem_init(&semaforoT1,0,0);
-    sem_init(&semaforoT5,0,1);
 
 
     pthread_create(&identificadores[0],NULL,tarefaThread1,(void *) frases[0]); // iniciando thread 1
@@ -72,9 +70,6 @@ int main(){
     
     sem_destroy(&semaforoT1);
     sem_destroy(&semaforoT24);
-    sem_destroy(&semaforoT5);
-
-
 
     pthread_exit(NULL);
     return 0;
